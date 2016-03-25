@@ -8,8 +8,7 @@
 
 class QStringList;
 
-namespace QtCSV
-{
+namespace QtCSV {
     class AbstractData;
 
     // Reader class is a file reader that work with csv-files. It needs an
@@ -25,22 +24,21 @@ namespace QtCSV
     // - QList<QStringList>, where each QStringList contains values of one row.
     // - AbstractData-based container class, using virtual function
     // addRow(QStringList&).
-    class QTCSVSHARED_EXPORT Reader
-    {
+    class QTCSVSHARED_EXPORT Reader {
     public:
         // Read csv-file and save it's data as strings to QList<QStringList>
-        static QList<QStringList> readToList(const QString& filePath,
-                        const QString& separator = QString(","),
-                        const QString& textDelimeter = QString("\""),
-                        QTextCodec* codec = QTextCodec::codecForName("UTF-8"));
+        static QList<QStringList> readToList(const QString &filePath,
+                                             const QString &separator = QString(","),
+                                             const QString &textDelimeter = QString("\""),
+                                             QTextCodec *codec = QTextCodec::codecForName("UTF-8"));
 
         // Read csv-file and save it's data to AbstractData-based container
         // class
-        static bool readToData(const QString& filePath,
-                        AbstractData& data,
-                        const QString& separator = QString(","),
-                        const QString& textDelimeter = QString("\""),
-                        QTextCodec* codec = QTextCodec::codecForName("UTF-8"));
+        static bool readToData(const QString &filePath,
+                               AbstractData &data,
+                               const QString &separator = QString(","),
+                               const QString &textDelimeter = QString("\""),
+                               QTextCodec *codec = QTextCodec::codecForName("UTF-8"));
     };
 }
 

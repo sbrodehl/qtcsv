@@ -19,12 +19,11 @@ using namespace QtCSV;
 // create object of class TempFileHandler, you must specify absolute path
 // to the (temp) file (as a string). When object will be about to destroy, it
 // will try to remove specified file.
-class TempFileHandler
-{
+class TempFileHandler {
 public:
-    explicit TempFileHandler(const QString &filePath) : m_filePath(filePath) {}
-    ~TempFileHandler()
-    {
+    explicit TempFileHandler(const QString &filePath) : m_filePath(filePath) { }
+
+    ~TempFileHandler() {
         QFile::remove(m_filePath);
     }
 
@@ -32,18 +31,17 @@ private:
     QString m_filePath;
 };
 
-class WriterPrivate
-{
+class WriterPrivate {
 public:
     // Append information to the file
-    static bool appendToFile(const QString& filePath,
-                             ContentIterator& content,
-                             QTextCodec* codec);
+    static bool appendToFile(const QString &filePath,
+                             ContentIterator &content,
+                             QTextCodec *codec);
 
     // Overwrite file with new information
-    static bool overwriteFile(const QString& filePath,
-                              ContentIterator& content,
-                              QTextCodec* codec);
+    static bool overwriteFile(const QString &filePath,
+                              ContentIterator &content,
+                              QTextCodec *codec);
 
     // Create unique name for the temporary file
     static QString getTempFileName();
@@ -56,28 +54,24 @@ public:
 // - codec - pointer to codec object that would be used for file writing
 // @output:
 // - bool - True if data was appended to the file, otherwise False
-bool WriterPrivate::appendToFile(const QString& filePath,
-                                 ContentIterator& content,
-                                 QTextCodec* codec)
-{
-    if ( true == filePath.isEmpty() || true == content.isEmpty() )
-    {
+bool WriterPrivate::appendToFile(const QString &filePath,
+                                 ContentIterator &content,
+                                 QTextCodec *codec) {
+    if (filePath.isEmpty() || content.isEmpty()) {
         qDebug() << __FUNCTION__ << "Error - invalid arguments";
         return false;
     }
 
     QFile csvFile(filePath);
-    if ( false == csvFile.open(QIODevice::Append | QIODevice::Text) )
-    {
+    if (!csvFile.open(QIODevice::Append | QIODevice::Text)) {
         qDebug() << __FUNCTION__ << "Error - can't open file:" <<
-                    csvFile.fileName();
+        csvFile.fileName();
         return false;
     }
 
     QTextStream stream(&csvFile);
     stream.setCodec(codec);
-    while( content.hasNext() )
-    {
+    while (content.hasNext()) {
         stream << content.getNext();
     }
 
@@ -94,40 +88,35 @@ bool WriterPrivate::appendToFile(const QString& filePath,
 // - codec - pointer to codec object that would be used for file writing
 // @output:
 // - bool - True if file was overwritten with new data, otherwise False
-bool WriterPrivate::overwriteFile(const QString& filePath,
-                                  ContentIterator& content,
-                                  QTextCodec* codec)
-{
+bool WriterPrivate::overwriteFile(const QString &filePath,
+                                  ContentIterator &content,
+                                  QTextCodec *codec) {
     // Create path to the unique temporary file
     QString tempFileName = getTempFileName();
-    if ( tempFileName.isEmpty() )
-    {
+    if (tempFileName.isEmpty()) {
         qDebug() << __FUNCTION__ <<
-                    "Error - failed to create unique name for temp file";
+        "Error - failed to create unique name for temp file";
         return false;
     }
 
     TempFileHandler handler(tempFileName);
 
     // Write information to temporary file
-    if ( false == appendToFile(tempFileName, content, codec) )
-    {
+    if (!appendToFile(tempFileName, content, codec)) {
         return false;
     }
 
     // Remove "old" file if it exists
-    if ( true == QFile::exists(filePath) && false == QFile::remove(filePath) )
-    {
+    if (QFile::exists(filePath) && !QFile::remove(filePath)) {
         qDebug() << __FUNCTION__ << "Error - failed to remove file" << filePath;
         return false;
     }
 
     // Copy "new" file (temporary file) to the destination path (replace
     // "old" file)
-    if ( false == QFile::copy(tempFileName, filePath))
-    {
+    if (!QFile::copy(tempFileName, filePath)) {
         qDebug() << __FUNCTION__ <<
-                    "Error - failed to copy temp file to" << filePath;
+        "Error - failed to copy temp file to" << filePath;
         return false;
     }
 
@@ -139,16 +128,13 @@ bool WriterPrivate::overwriteFile(const QString& filePath,
 // - QString - string with the absolute path to the temporary file that is not
 // exist yet. If function failed to create unique path, it will return empty
 // string.
-QString WriterPrivate::getTempFileName()
-{
+QString WriterPrivate::getTempFileName() {
     QString nameTemplate = QDir::tempPath() + "/qtcsv_" +
-                QString::number(QCoreApplication::applicationPid()) + "_%1.csv";
+                           QString::number(QCoreApplication::applicationPid()) + "_%1.csv";
 
-    for (int counter = 0; counter < std::numeric_limits<int>::max(); ++counter)
-    {
+    for (int counter = 0; counter < std::numeric_limits<int>::max(); ++counter) {
         QString name = nameTemplate.arg(QString::number(qrand()));
-        if ( false == QFile::exists(name) )
-        {
+        if (!QFile::exists(name)) {
             return name;
         }
     }
@@ -172,23 +158,20 @@ QString WriterPrivate::getTempFileName()
 // - codec - pointer to codec object that would be used for file writing
 // @output:
 // - bool - True if data was written to the file, otherwise False
-bool Writer::write(const QString& filePath,
-                   const AbstractData& data,
-                   const QString& separator,
-                   const QString& textDelimeter,
-                   const WriteMode& mode,
-                   const QStringList& header,
-                   const QStringList& footer,
-                   QTextCodec* codec)
-{
-    if ( true == filePath.isEmpty() || true == data.isEmpty() )
-    {
+bool Writer::write(const QString &filePath,
+                   const AbstractData &data,
+                   const QString &separator,
+                   const QString &textDelimeter,
+                   const WriteMode &mode,
+                   const QStringList &header,
+                   const QStringList &footer,
+                   QTextCodec *codec) {
+    if (filePath.isEmpty() || data.isEmpty()) {
         qDebug() << __FUNCTION__ << "Error - invalid arguments";
         return false;
     }
 
-    if ( false == CheckFile(filePath) )
-    {
+    if (!CheckFile(filePath)) {
         qDebug() << __FUNCTION__ << "Error - wrong file path/name:" << filePath;
         return false;
     }
@@ -196,8 +179,7 @@ bool Writer::write(const QString& filePath,
     ContentIterator content(data, separator, textDelimeter, header, footer);
 
     bool result = false;
-    switch (mode)
-    {
+    switch (mode) {
         case APPEND:
             result = WriterPrivate::appendToFile(filePath, content, codec);
             break;

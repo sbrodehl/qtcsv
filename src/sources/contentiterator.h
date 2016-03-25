@@ -2,10 +2,10 @@
 #define QTCSVCONTENTITERATOR_H
 
 class QString;
+
 class QStringList;
 
-namespace QtCSV
-{
+namespace QtCSV {
     class AbstractData;
 
     // ContentIterator is a class that holds references to containers with
@@ -17,17 +17,16 @@ namespace QtCSV
     // You can use this class with csv-writer class. ContentIterator will join
     // elements of one row with separator symbol and then join rows with
     // new line symbol.
-    class ContentIterator
-    {
+    class ContentIterator {
     public:
-        explicit ContentIterator(const AbstractData& data,
-                                 const QString& separator,
-                                 const QString& textDelimeter,
-                                 const QStringList& header,
-                                 const QStringList& footer,
+        explicit ContentIterator(const AbstractData &data,
+                                 const QString &separator,
+                                 const QString &textDelimeter,
+                                 const QStringList &header,
+                                 const QStringList &footer,
                                  int chunkSize = 1000);
 
-        ~ContentIterator() {}
+        ~ContentIterator() { }
 
         // Check if content contains information
         bool isEmpty() const;
@@ -38,14 +37,14 @@ namespace QtCSV
 
     private:
         // Compose row string from values
-        QString composeRow(const QStringList& values) const;
+        QString composeRow(const QStringList &values) const;
 
     private:
-        const AbstractData& m_data;
-        const QString& m_separator;
-        const QString& m_textDelimeter;
-        const QStringList& m_header;
-        const QStringList& m_footer;
+        const AbstractData &m_data;
+        const QString &m_separator;
+        const QString &m_textDelimeter;
+        const QStringList &m_header;
+        const QStringList &m_footer;
         const int m_chunkSize;
         int m_dataRow;
         bool atEnd;

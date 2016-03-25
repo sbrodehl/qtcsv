@@ -1,6 +1,5 @@
 #include "include/reader.h"
 
-#include <QStringList>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -11,34 +10,33 @@
 
 using namespace QtCSV;
 
-class ReaderPrivate
-{
+class ReaderPrivate {
 public:
     // Function that really reads csv-file and save it's data as strings to
     // QList<QStringList>
-    static bool read(const QString& filePath,
-                     QList<QStringList>& list,
-                     const QString& separator,
-                     const QString& textDelimeter,
-                     QTextCodec* codec);
+    static bool read(const QString &filePath,
+                     QList<QStringList> &list,
+                     const QString &separator,
+                     const QString &textDelimeter,
+                     QTextCodec *codec);
 
 private:
     // Check if file path and separator are valid
-    static bool checkParams(const QString& filePath,
-                            const QString& separator);
+    static bool checkParams(const QString &filePath,
+                            const QString &separator);
 
     // Split string line to elements by separators
-    static QStringList splitElements(const QString& line,
-                                     const QString& separator,
-                                     const QString& textDelimeter,
-                                     bool& rowEnded);
+    static QStringList splitElements(const QString &line,
+                                     const QString &separator,
+                                     const QString &textDelimeter,
+                                     bool &rowEnded);
 
     // Remove text delimeter symbols
-    static QStringList removeTextDelimeters(const QStringList& elements,
-                                            const QString& textDelimeter);
+    static QStringList removeTextDelimeters(const QStringList &elements,
+                                            const QString &textDelimeter);
 
     // Get two text delimeter symbols
-    static QString getDoubleTextDelimiter(const QString& textDelimiter);
+    static QString getDoubleTextDelimiter(const QString &textDelimiter);
 };
 
 // Function that really reads csv-file and save it's data as strings to
@@ -52,21 +50,18 @@ private:
 // @output:
 // - QList<QStringList> - list of values (as strings) from csv-file. If case of
 // error will return empty QList<QStringList>.
-bool ReaderPrivate::read(const QString& filePath,
-                         QList<QStringList>& list,
-                         const QString& separator,
-                         const QString& textDelimeter,
-                         QTextCodec* codec)
-{
-    if ( false == checkParams(filePath, separator) )
-    {
+bool ReaderPrivate::read(const QString &filePath,
+                         QList<QStringList> &list,
+                         const QString &separator,
+                         const QString &textDelimeter,
+                         QTextCodec *codec) {
+    if (!checkParams(filePath, separator)) {
         return false;
     }
 
     QFile csvFile(filePath);
-    if ( false == csvFile.open(QIODevice::ReadOnly | QIODevice::Text) )
-    {
-        qDebug() << __FUNCTION__  << "Error - can't open file:" << filePath;
+    if (!csvFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << __FUNCTION__ << "Error - can't open file:" << filePath;
         return false;
     }
 
@@ -75,38 +70,26 @@ bool ReaderPrivate::read(const QString& filePath,
 
     QStringList row;
     bool rowEnded = true;
-    while ( false == stream.atEnd() )
-    {
+    while (!stream.atEnd()) {
         QString line = stream.readLine();
         QStringList elements = ReaderPrivate::splitElements(
-                  line, separator, textDelimeter, rowEnded);
-        if (rowEnded)
-        {
-            if (row.isEmpty())
-            {
+                line, separator, textDelimeter, rowEnded);
+        if (rowEnded) {
+            if (row.isEmpty()) {
                 list << elements;
-            }
-            else
-            {
-                if (false == elements.isEmpty())
-                {
+            } else {
+                if (!elements.isEmpty()) {
                     row.last().append(elements.takeFirst());
                     row << elements;
                 }
-
                 list << row;
                 row.clear();
             }
-        }
-        else
-        {
-            if (false == elements.isEmpty())
-            {
-                if (false == row.isEmpty())
-                {
+        } else {
+            if (!elements.isEmpty()) {
+                if (!row.isEmpty()) {
                     row.last().append(elements.takeFirst());
                 }
-
                 row << elements;
             }
         }
@@ -114,8 +97,7 @@ bool ReaderPrivate::read(const QString& filePath,
 
     csvFile.close();
 
-    if (false == rowEnded && false == row.isEmpty())
-    {
+    if (!rowEnded && !row.isEmpty()) {
         list << row;
     }
 
@@ -128,20 +110,17 @@ bool ReaderPrivate::read(const QString& filePath,
 // - separator - string or character that separate values in a row
 // @output:
 // - bool - True if file path and separator are valid, otherwise False
-bool ReaderPrivate::checkParams(const QString& filePath,
-                                const QString& separator)
-{
-    if ( filePath.isEmpty() || separator.isEmpty() )
-    {
-        qDebug() << __FUNCTION__  <<
-                    "Error - invalid file path and/or separator";
+bool ReaderPrivate::checkParams(const QString &filePath,
+                                const QString &separator) {
+    if (filePath.isEmpty() || separator.isEmpty()) {
+        qDebug() << __FUNCTION__ <<
+        "Error - invalid file path and/or separator";
         return false;
     }
 
-    if ( false == CheckFile(filePath) )
-    {
-        qDebug() << __FUNCTION__  << "Error - wrong file path/name:" <<
-                    filePath;
+    if (!CheckFile(filePath)) {
+        qDebug() << __FUNCTION__ << "Error - wrong file path/name:" <<
+        filePath;
         return false;
     }
 
@@ -155,29 +134,23 @@ bool ReaderPrivate::checkParams(const QString& filePath,
 // - textDelimeter - string that used as text delimeter
 // @output:
 // - QStringList - list of elements
-QStringList ReaderPrivate::splitElements(const QString& line,
-                                         const QString& separator,
-                                         const QString& textDelimeter,
-                                         bool& rowEnded)
-{
+QStringList ReaderPrivate::splitElements(const QString &line,
+                                         const QString &separator,
+                                         const QString &textDelimeter,
+                                         bool &rowEnded) {
     // If separator is empty, return whole line. Can't work in this
     // conditions!
-    if (separator.isEmpty())
-    {
+    if (separator.isEmpty()) {
         rowEnded = true;
         return (QStringList() << line);
     }
 
-    if (line.isEmpty())
-    {
+    if (line.isEmpty()) {
         // If previous row was ended, then return empty QStringList.
         // Otherwise return list that contains one element - new line symbols
-        if (rowEnded)
-        {
+        if (rowEnded) {
             return QStringList();
-        }
-        else
-        {
+        } else {
             return (QStringList() << LF);
         }
     }
@@ -193,25 +166,20 @@ QStringList ReaderPrivate::splitElements(const QString& line,
     // - the last element of the previous row should contain LF symbol (new
     // line)
     QStringList result;
-    if (false == rowEnded)
-    {
+    if (false == rowEnded) {
         result << LF;
     }
 
     const QString doubleTextDelim = getDoubleTextDelimiter(textDelimeter);
-    for (int i = 0; i < elements.size(); ++i)
-    {
+    for (int i = 0; i < elements.size(); ++i) {
         const bool startsWith = elements.at(i).startsWith(textDelimeter);
         const bool endsWith = elements.at(i).endsWith(textDelimeter);
-        if (rowEnded)
-        {
+        if (rowEnded) {
             // If rowEnded is True, then this element will be the new element.
             // If it is ends and starts with text delimiter or just not starts
             // with text delimiter, then add this element to the result list
             // as is.
-            if ( (false == startsWith) ||
-                 (startsWith && endsWith) )
-            {
+            if (startsWith == 0 || (startsWith && endsWith)) {
                 result << elements.at(i);
                 continue;
             }
@@ -223,16 +191,14 @@ QStringList ReaderPrivate::splitElements(const QString& line,
             // we set flag rowEnded to false.
             rowEnded = false;
             QString str = elements.at(i);
-            for (int j = i + 1; j < elements.size(); ++j, ++i)
-            {
+            for (int j = i + 1; j < elements.size(); ++j, ++i) {
                 str += separator + elements.at(j);
 
                 const bool elemEndsWithTD =
                         elements.at(j).endsWith(textDelimeter);
                 const bool elemEndsWithDoubleTD =
                         elements.at(j).endsWith(doubleTextDelim);
-                if (elemEndsWithTD && false == elemEndsWithDoubleTD)
-                {
+                if (elemEndsWithTD && elemEndsWithDoubleTD == 0) {
                     // We found 'end' element. Set up new i value and set
                     // rowEnded to true.
                     ++i;
@@ -243,11 +209,9 @@ QStringList ReaderPrivate::splitElements(const QString& line,
 
             result << str;
         }
-        else
-        {
+        else {
             QString strToAdd = elements.at(i);
-            if (0 < i)
-            {
+            if (0 < i) {
                 strToAdd.prepend(separator);
             }
 
@@ -255,8 +219,7 @@ QStringList ReaderPrivate::splitElements(const QString& line,
 
             const bool endsWithDoubleTD =
                     elements.at(i).endsWith(doubleTextDelim);
-            if (endsWith && false == endsWithDoubleTD)
-            {
+            if (endsWith && endsWithDoubleTD == 0) {
                 rowEnded = true;
             }
         }
@@ -271,18 +234,15 @@ QStringList ReaderPrivate::splitElements(const QString& line,
 // - textDelimeter - string that delimeter text parts from each other
 // @output:
 // - QStringList - list of elements
-QStringList ReaderPrivate::removeTextDelimeters(const QStringList& elements,
-                                                const QString& textDelimeter)
-{
-    if (elements.isEmpty() || textDelimeter.isEmpty())
-    {
+QStringList ReaderPrivate::removeTextDelimeters(const QStringList &elements,
+                                                const QString &textDelimeter) {
+    if (elements.isEmpty() || textDelimeter.isEmpty()) {
         return elements;
     }
 
     QStringList result;
     const QString doubleTextDelim = getDoubleTextDelimiter(textDelimeter);
-    for (int i = 0; i < elements.size(); ++i)
-    {
+    for (int i = 0; i < elements.size(); ++i) {
         QString str = elements.at(i);
 
         // If string starts and ends with text delimiter symbols, then remove
@@ -294,13 +254,11 @@ QStringList ReaderPrivate::removeTextDelimeters(const QStringList& elements,
 //            str.remove(0, textDelimeter.size());
 //        }
 
-        if (str.startsWith(textDelimeter))
-        {
+        if (str.startsWith(textDelimeter)) {
             str.remove(0, textDelimeter.size());
         }
 
-        if (str.endsWith(textDelimeter))
-        {
+        if (str.endsWith(textDelimeter)) {
             str.chop(textDelimeter.size());
         }
 
@@ -317,8 +275,7 @@ QStringList ReaderPrivate::removeTextDelimeters(const QStringList& elements,
 // - textDelimiter - string
 // @output:
 // - QString - string that contains two text delimiter symbols
-QString ReaderPrivate::getDoubleTextDelimiter(const QString& textDelimiter)
-{
+QString ReaderPrivate::getDoubleTextDelimiter(const QString &textDelimiter) {
     return textDelimiter + textDelimiter;
 }
 
@@ -331,11 +288,10 @@ QString ReaderPrivate::getDoubleTextDelimiter(const QString& textDelimiter)
 // @output:
 // - QList<QStringList> - list of values (as strings) from csv-file. If case of
 // error will return empty QList<QStringList>.
-QList<QStringList> Reader::readToList(const QString& filePath,
-                                      const QString& separator,
-                                      const QString& textDelimeter,
-                                      QTextCodec* codec)
-{
+QList<QStringList> Reader::readToList(const QString &filePath,
+                                      const QString &separator,
+                                      const QString &textDelimeter,
+                                      QTextCodec *codec) {
     QList<QStringList> data;
     ReaderPrivate::read(filePath, data, separator, textDelimeter, codec);
 
@@ -352,22 +308,18 @@ QList<QStringList> Reader::readToList(const QString& filePath,
 // - codec - pointer to codec object that would be used for file reading
 // @output:
 // - bool - True if file was successfully read, otherwise False
-bool Reader::readToData(const QString& filePath,
-                        AbstractData& data,
-                        const QString& separator,
-                        const QString& textDelimeter,
-                        QTextCodec* codec)
-{
+bool Reader::readToData(const QString &filePath,
+                        AbstractData &data,
+                        const QString &separator,
+                        const QString &textDelimeter,
+                        QTextCodec *codec) {
     QList<QStringList> list;
-    if (false == ReaderPrivate::read(filePath, list, separator, textDelimeter,
-                                     codec))
-    {
+    if (!ReaderPrivate::read(filePath, list, separator, textDelimeter, codec)) {
         return false;
     }
 
-    for (int i = 0; i < list.size(); ++i)
-    {
-        data.addRow( list.at(i) );
+    for (int i = 0; i < list.size(); ++i) {
+        data.addRow(list.at(i));
     }
 
     return true;

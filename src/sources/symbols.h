@@ -3,8 +3,7 @@
 
 #include <QString>
 
-namespace QtCSV
-{
+namespace QtCSV {
     const QString DOUBLE_QUOTE("\"");
     const QString TWO_DOUBLE_QUOTES("\"\"");
     const QString CR("\r");
