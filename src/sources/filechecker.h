@@ -12,8 +12,7 @@ namespace QtCSV {
     // - bool - True if file is OK, else False
     inline bool CheckFile(const QString &filePath) {
         QFileInfo fileInfo(filePath);
-        return fileInfo.isAbsolute() && "csv" == fileInfo.completeSuffix();
-
+        return fileInfo.isAbsolute(); // && "csv" == fileInfo.completeSuffix();
     }
 }
 
