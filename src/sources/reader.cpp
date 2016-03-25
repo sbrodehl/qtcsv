@@ -113,8 +113,7 @@ bool ReaderPrivate::read(const QString &filePath,
 bool ReaderPrivate::checkParams(const QString &filePath,
                                 const QString &separator) {
     if (filePath.isEmpty() || separator.isEmpty()) {
-        qDebug() << __FUNCTION__ <<
-        "Error - invalid file path and/or separator";
+        qDebug() << __FUNCTION__ << "Error - invalid file path and/or separator";
         return false;
     }
 
