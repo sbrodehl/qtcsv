@@ -216,7 +216,7 @@ make
 
 If you want to run tests, then do this:
 ```bash
-cp ./src/libqtcsv.so.1 ./tests
+cp ./src/libqtcsv.* ./tests
 make check
 ```
 
