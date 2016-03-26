@@ -64,8 +64,7 @@ bool WriterPrivate::appendToFile(const QString &filePath,
 
     QFile csvFile(filePath);
     if (!csvFile.open(QIODevice::Append | QIODevice::Text)) {
-        qDebug() << __FUNCTION__ << "Error - can't open file:" <<
-        csvFile.fileName();
+        qDebug() << __FUNCTION__ << "Error - can't open file:" << csvFile.fileName();
         return false;
     }
 
@@ -94,8 +93,7 @@ bool WriterPrivate::overwriteFile(const QString &filePath,
     // Create path to the unique temporary file
     QString tempFileName = getTempFileName();
     if (tempFileName.isEmpty()) {
-        qDebug() << __FUNCTION__ <<
-        "Error - failed to create unique name for temp file";
+        qDebug() << __FUNCTION__ << "Error - failed to create unique name for temp file";
         return false;
     }
 
@@ -115,8 +113,7 @@ bool WriterPrivate::overwriteFile(const QString &filePath,
     // Copy "new" file (temporary file) to the destination path (replace
     // "old" file)
     if (!QFile::copy(tempFileName, filePath)) {
-        qDebug() << __FUNCTION__ <<
-        "Error - failed to copy temp file to" << filePath;
+        qDebug() << __FUNCTION__ << "Error - failed to copy temp file to" << filePath;
         return false;
     }
 
