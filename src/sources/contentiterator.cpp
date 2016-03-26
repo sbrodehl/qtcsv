@@ -42,7 +42,6 @@ QString ContentIterator::getNext() {
     if (atEnd) {
         return QString();
     }
-
     QString content;
     int rowsNumber = 0;
 
@@ -55,7 +54,6 @@ QString ContentIterator::getNext() {
             content.append(composeRow(m_header));
             ++rowsNumber;
         }
-
         m_dataRow = 0;
     }
 
@@ -63,8 +61,7 @@ QString ContentIterator::getNext() {
     // true, add to the chunk information from the m_data. Otherwise, this means
     // that we already have passed all the rows in the m_data.
     if (m_dataRow < m_data.rowCount()) {
-        int endRow = qMin(m_dataRow + m_chunkSize - rowsNumber,
-                          m_data.rowCount());
+        int endRow = qMin(m_dataRow + m_chunkSize - rowsNumber, m_data.rowCount());
         for (int i = m_dataRow; i < endRow; ++i, ++m_dataRow, ++rowsNumber) {
             content.append(composeRow(m_data.rowValues(i)));
         }
@@ -95,7 +92,6 @@ QString ContentIterator::composeRow(const QStringList &values) const {
     const QString twoDelimeters = m_textDelimeter + m_textDelimeter;
     for (int i = 0; i < rowValues.size(); ++i) {
         rowValues[i].replace(m_textDelimeter, twoDelimeters);
-
         QString delimeter = m_textDelimeter;
         if (delimeter.isEmpty() &&
             (rowValues.at(i).contains(m_separator) ||
@@ -103,13 +99,10 @@ QString ContentIterator::composeRow(const QStringList &values) const {
              rowValues.at(i).contains(LF))) {
             delimeter = DOUBLE_QUOTE;
         }
-
         rowValues[i].prepend(delimeter);
         rowValues[i].append(delimeter);
     }
-
     QString result = rowValues.join(m_separator);
     result.append(CRLF);
-
     return result;
 }

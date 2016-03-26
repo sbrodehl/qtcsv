@@ -28,22 +28,18 @@ namespace QtCSV {
         // Clear all data
         virtual void clear();
         // Insert new row at index position 'row'
-        void insertRow(const int &row,
-                       const QString &value);
+        void insertRow(const int &row, const QString &value);
 
-        void insertRow(const int &row,
-                       const QStringList &values);
+        void insertRow(const int &row, const QStringList &values);
 
         // Check if there are any data
         virtual bool isEmpty() const;
         // Removes the row at index position 'row'
         void removeRow(const int &row);
         // Replaces the row at index position 'row' with new row
-        void replaceRow(const int &row,
-                        const QString &value);
+        void replaceRow(const int &row, const QString &value);
 
-        void replaceRow(const int &row,
-                        const QStringList &values);
+        void replaceRow(const int &row, const QStringList &values);
 
         // Reserve space for 'size' rows
         void reserve(const int &size);
@@ -54,8 +50,7 @@ namespace QtCSV {
 
         bool operator==(const StringData &other) const;
 
-        friend bool operator!=(const StringData &left,
-                               const StringData &right) {
+        friend bool operator!=(const StringData &left, const StringData &right) {
             return !(left == right);
         }
 
